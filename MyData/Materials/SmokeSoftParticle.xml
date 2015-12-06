@@ -1,4 +1,5 @@
 <material>
     <technique name="Techniques/DiffVColUnlitAlphaSP.xml" />
     <texture unit="diffuse" name="Textures/Smoke.dds" />
+    <parameter name="DepthDiffMult" value="800" />
 </material>

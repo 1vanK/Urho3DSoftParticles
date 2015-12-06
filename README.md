@@ -3,6 +3,8 @@
 License: Public Domain<br>
 http://urho3d.prophpbb.com/topic1611.html
 
+For big sprites you need decrease DepthDiffMult in material.
+
 Before:<br>
 ![old](https://cloud.githubusercontent.com/assets/13021826/11613434/e290eed6-9c39-11e5-8c23-c34a33275039.png)
 

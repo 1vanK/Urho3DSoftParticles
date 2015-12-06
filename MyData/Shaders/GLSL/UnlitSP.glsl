@@ -4,6 +4,10 @@
 #include "ScreenPos.glsl"
 #include "Fog.glsl"
 
+#ifdef COMPILEPS
+uniform float cDepthDiffMult;
+#endif
+
 varying vec2 vTexCoord;
 varying vec4 vWorldPos;
 varying vec4 vScreenPos;
@@ -65,7 +69,7 @@ void PS()
     
         if (solidGeometrydepth <= particleDepth)
         {
-            float deltaDepth = (particleDepth - solidGeometrydepth) * 800;
+            float deltaDepth = (particleDepth - solidGeometrydepth) * cDepthDiffMult;
             diffColor.a -= deltaDepth;
         }
     
