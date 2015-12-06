@@ -1,0 +1,3 @@
+<technique vs="UnlitSP" ps="UnlitSP" vsdefines="VERTEXCOLOR SP" psdefines="DIFFMAP VERTEXCOLOR SP">
+    <pass name="softparticles" depthtest="always" depthwrite="false" blend="alpha" />
+</technique>
