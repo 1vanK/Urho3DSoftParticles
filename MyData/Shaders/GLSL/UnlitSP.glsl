@@ -65,11 +65,11 @@ void PS()
     #else
 
         float particleDepth = vWorldPos.w;
-        float solidGeometrydepth = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r); // use ReconstructDepth when HWDEPTH
+        float solidGeometryDepth = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r); // use ReconstructDepth when HWDEPTH
     
-        if (solidGeometrydepth <= particleDepth)
+        if (solidGeometryDepth <= particleDepth)
         {
-            float deltaDepth = (particleDepth - solidGeometrydepth) * cDepthDiffMult;
+            float deltaDepth = (particleDepth - solidGeometryDepth) * cDepthDiffMult;
             diffColor.a -= deltaDepth;
         }
     
