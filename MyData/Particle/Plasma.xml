@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <particleeffect>
-	<material name="Materials/MyFire.xml" />
+	<material name="Materials/Plasma.xml" />
 	<numparticles value="1000" />
-	<updateinvisible enable="true" />
+	<updateinvisible enable="false" />
 	<relative enable="false" />
 	<scaled enable="true" />
-	<sorted enable="true" />
+	<sorted enable="false" />
 	<animlodbias value="0" />
 	<emittertype value="Sphere" />
 	<emittersize value="0 0 0" />
@@ -15,12 +15,12 @@
 	<activetime value="0" />
 	<inactivetime value="0" />
 	<emissionrate min="10" max="10" />
-	<particlesize min="0.01 0.01" max="0.01 0.01" />
-	<timetolive min="2" max="2" />
-	<velocity min="1" max="1" />
-	<rotation min="0" max="360" />
+	<particlesize min="1 1" max="1 1" />
+	<timetolive min="1" max="1" />
+	<velocity min="1" max="2" />
+	<rotation min="0" max="0" />
 	<rotationspeed min="-60" max="60" />
-	<sizedelta add="80" mul="0" />
+	<sizedelta add="10" mul="0" />
 	<colorfade color="1 1 1 1" time="0" />
-	<colorfade color="0 0 0 0" time="2" />
+	<colorfade color="0 0 0 0" time="1" />
 </particleeffect>
