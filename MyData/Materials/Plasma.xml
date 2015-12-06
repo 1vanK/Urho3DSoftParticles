@@ -1,6 +1,6 @@
 <material>
     <technique name="Techniques/DiffVColAddSP.xml" />
     <texture unit="diffuse" name="Textures/Plasma.png" />
-    <parameter name="DepthDiffMult" value="10" />
+    <parameter name="DepthDiffMult" value="100" />
     <parameter name="AddBlending" value="true" />
 </material>
