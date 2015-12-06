@@ -6,6 +6,7 @@
 
 #ifdef COMPILEPS
 uniform float cDepthDiffMult;
+uniform bool cAddBlending;
 #endif
 
 varying vec2 vTexCoord;
@@ -70,7 +71,10 @@ void PS()
         if (solidGeometryDepth <= particleDepth)
         {
             float deltaDepth = (particleDepth - solidGeometryDepth) * cDepthDiffMult;
-            diffColor.a -= deltaDepth;
+            if (cAddBlending)
+                diffColor.rgb -= deltaDepth;
+            else
+                diffColor.a -= deltaDepth;
         }
     
         gl_FragColor = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
