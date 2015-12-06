@@ -22,7 +22,7 @@ void Start()
 
 void MoveCamera(float timeStep)
 {
-    const float MOVE_SPEED = 20.0f;
+    const float MOVE_SPEED = 5.0f;
     const float MOUSE_SENSITIVITY = 0.1f;
 
     IntVector2 mouseMove = input.mouseMove;
@@ -40,6 +40,10 @@ void MoveCamera(float timeStep)
         cameraNode.Translate(Vector3(-1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
     if (input.keyDown['D'])
         cameraNode.Translate(Vector3(1.0f, 0.0f, 0.0f) * MOVE_SPEED * timeStep);
+    if (input.keyDown['Q'])
+        cameraNode.Translate(Vector3(0.0f, -1.0f, 0.0f) * MOVE_SPEED * timeStep);
+    if (input.keyDown['E'])
+        cameraNode.Translate(Vector3(0.0f, 1.0f, 0.0f) * MOVE_SPEED * timeStep);
 }
 
 
