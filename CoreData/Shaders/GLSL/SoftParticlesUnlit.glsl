@@ -13,8 +13,8 @@ varying vec4 vWorldPos;
 #endif
 
 #ifdef SOFTPARTICLES
-uniform float cFadeScale;           // [1.0..n]
-uniform float cFadeContrastPower;   // [1.0..n]
+uniform float cFadeScale;           // [0.1..n]
+uniform float cFadeContrastPower;   // [0.1..n]
 #endif  
 
 void VS()
@@ -71,9 +71,9 @@ void PS()
         float diffZ = (sceneDepth - particleDepth) * (cFarClipPS - cNearClipPS);
         diffZ *= cFadeScale;
         
-        float input = clamp(diffZ, 0.0, 1.0);        
-        float output = 0.5 * pow(clamp(2*((input > 0.5) ? 1 - input : input), 0.0, 1.0), cFadeContrastPower);
-        float weight = (input > 0.5) ? 1 - output : output; 
+        float inputValue = clamp(diffZ, 0.0, 1.0);        
+        float outputValue = 0.5 * pow(clamp(2*((inputValue > 0.5) ? 1 - inputValue : inputValue), 0.0, 1.0), cFadeContrastPower);
+        float weight = (inputValue > 0.5) ? 1 - outputValue : outputValue; 
             
         diffColor.a *= weight;
     #endif

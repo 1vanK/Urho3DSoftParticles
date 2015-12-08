@@ -17,10 +17,6 @@
     <command type="scenepass" pass="alpha" vertexlights="true" sort="backtofront" metadata="alpha" depthstencil="depth" >
             <texture unit="depth" name="depth" />
     </command>
-    
-    <command type="scenepass" enabled="false" pass="softparticles" vertexlights="true" sort="backtofront" metadata="alpha" blend="replace" output="viewport">
-        <texture unit="depth" name="depth" />
-    </command>
-   
+       
     <command type="scenepass" pass="postalpha" sort="backtofront" depthstencil="depth" />    
 </renderpath>
