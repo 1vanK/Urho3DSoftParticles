@@ -62,6 +62,8 @@ uniform float2 cShadowIntensity;
 uniform float2 cShadowMapInvSize;
 uniform float4 cShadowSplits;
 uniform float4x4 cLightMatricesPS[4];
+uniform float cFadeContrastPower;
+uniform float cFadeScale;
 #endif
 
 #else
@@ -173,6 +175,8 @@ cbuffer MaterialPS : register(b4)
     float3 cMatEmissiveColor;
     float3 cMatEnvMapColor;
     float4 cMatSpecColor;
+    float cFadeContrastPower;
+    float cFadeScale;
 }
 #endif
 

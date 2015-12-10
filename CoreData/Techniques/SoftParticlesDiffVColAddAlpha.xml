@@ -1,4 +1,4 @@
-<technique vs="SoftParticlesLit" ps="SoftParticlesLit" vsdefines="VERTEXCOLOR SOFTPARTICLES" psdefines="DIFFMAP HWDEPTH VERTEXCOLOR SOFTPARTICLES">
-    <pass name="alpha" depthtest="always" depthwrite="false" blend="alpha" />
-    <pass name="litalpha" depthtest="always" depthwrite="false" blend="addalpha" />
+<technique vs="LitParticle" ps="LitParticle" vsdefines="VERTEXCOLOR SOFTPARTICLES" psdefines="DIFFMAP HWDEPTH VERTEXCOLOR SOFTPARTICLES">
+    <pass name="alpha" depthtest="less" depthwrite="false" blend="alpha" />
+    <pass name="litalpha" depthtest="less" depthwrite="false" blend="addalpha" />
 </technique>
