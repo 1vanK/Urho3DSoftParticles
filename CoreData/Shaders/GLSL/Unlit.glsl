@@ -10,6 +10,12 @@ varying vec4 vWorldPos;
     varying vec4 vColor;
 #endif
 
+#ifdef SOFTPARTICLES
+uniform float cFadeScale;
+uniform float cFadeContrastPower;
+varying vec4 vScreenPos;
+#endif  
+
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
@@ -20,6 +26,10 @@ void VS()
 
     #ifdef VERTEXCOLOR
         vColor = iColor;
+    #endif
+    
+    #ifdef SOFTPARTICLES    
+        vScreenPos = GetScreenPos(gl_Position);
     #endif
 }
 
@@ -46,6 +56,28 @@ void PS()
     #else
         float fogFactor = GetFogFactor(vWorldPos.w);
     #endif
+    
+    #ifdef SOFTPARTICLES
+        if (diffColor.a < (1.0 / 64)) discard; // optimize fill rate
+
+        #ifdef HWDEPTH
+            float sceneZ = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r);            
+        #else
+            float sceneZ = DecodeDepth(texture2DProj(sDepthBuffer, vScreenPos).rgb);
+        #endif
+                    
+        float particleDepth = vWorldPos.w;
+        float sceneDepth = sceneZ;
+                     
+        float diffZ = (sceneDepth - particleDepth) * (cFarClipPS - cNearClipPS);
+        diffZ *= cFadeScale;
+        
+        float inputValue = clamp(diffZ, 0.0, 1.0);        
+        float outputValue = 0.5 * pow(clamp(2*((inputValue > 0.5) ? 1 - inputValue : inputValue), 0.0, 1.0), cFadeContrastPower);
+        float weight = (inputValue > 0.5) ? 1 - outputValue : outputValue; 
+            
+        diffColor.a *= weight;
+    #endif
 
     #if defined(PREPASS)
         // Fill light pre-pass G-Buffer
@@ -57,6 +89,12 @@ void PS()
         gl_FragData[2] = vec4(0.5, 0.5, 0.5, 1.0);
         gl_FragData[3] = vec4(EncodeDepth(vWorldPos.w), 0.0);
     #else
-        gl_FragColor = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+        #ifndef OUTMRT01 
+            gl_FragColor = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+        #else
+            gl_FragData[0] = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+            gl_FragData[1] = vec4(1.0, 1.0, 1.0, 1.0);
+        #endif
     #endif
 }
+

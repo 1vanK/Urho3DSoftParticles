@@ -3,6 +3,7 @@
 #include "Transform.glsl"
 #include "Lighting.glsl"
 #include "Fog.glsl"
+#include "ScreenPos.glsl"
 
 varying vec2 vTexCoord;
 varying vec4 vWorldPos;
@@ -23,6 +24,12 @@ varying vec4 vWorldPos;
     varying vec3 vVertexLight;
 #endif
 
+#ifdef SOFTPARTICLES
+uniform float cFadeScale;
+uniform float cFadeContrastPower;   
+varying vec4 vScreenPos;
+#endif 
+
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
@@ -33,6 +40,10 @@ void VS()
 
     #ifdef VERTEXCOLOR
         vColor = iColor;
+    #endif
+    
+    #ifdef SOFTPARTICLES    
+        vScreenPos = GetScreenPos(gl_Position);
     #endif
 
     #ifdef PERPIXEL
@@ -87,6 +98,28 @@ void PS()
         float fogFactor = GetHeightFogFactor(vWorldPos.w, vWorldPos.y);
     #else
         float fogFactor = GetFogFactor(vWorldPos.w);
+    #endif
+
+    #ifdef SOFTPARTICLES
+        if (diffColor.a < (1.0 / 64)) discard; // optimize fill rate
+        
+        #ifdef HWDEPTH
+            float sceneZ = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r);            
+        #else
+            float sceneZ = DecodeDepth(texture2DProj(sDepthBuffer, vScreenPos).rgb);
+        #endif
+                    
+        float particleDepth = vWorldPos.w;
+        float sceneDepth = sceneZ;
+                     
+        float diffZ = (sceneDepth - particleDepth) * (cFarClipPS - cNearClipPS);
+        diffZ *= cFadeScale;
+        
+        float inputValue = clamp(diffZ, 0.0, 1.0);        
+        float outputValue = 0.5 * pow(clamp(2*((inputValue > 0.5) ? 1 - inputValue : inputValue), 0.0, 1.0), cFadeContrastPower);
+        float weight = (inputValue > 0.5) ? 1 - outputValue : outputValue; 
+            
+        diffColor.a *= weight;
     #endif
 
     #ifdef PERPIXEL

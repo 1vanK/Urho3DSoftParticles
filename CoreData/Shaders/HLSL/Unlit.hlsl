@@ -2,6 +2,7 @@
 #include "Samplers.hlsl"
 #include "Transform.hlsl"
 #include "Fog.hlsl"
+#include "ScreenPos.hlsl"
 
 void VS(float4 iPos : POSITION,
     #ifndef NOUV
@@ -20,13 +21,16 @@ void VS(float4 iPos : POSITION,
     #ifdef BILLBOARD
         float2 iSize : TEXCOORD1,
     #endif
-    out float2 oTexCoord : TEXCOORD0,
-    out float4 oWorldPos : TEXCOORD2,
+        out float2 oTexCoord : TEXCOORD0,
+        out float4 oWorldPos : TEXCOORD2,
     #ifdef VERTEXCOLOR
         out float4 oColor : COLOR0,
     #endif
     #if defined(D3D11) && defined(CLIPPLANE)
         out float oClip : SV_CLIPDISTANCE0,
+    #endif
+    #ifdef SOFTPARTICLES
+        out float4 oScreenPos : TEXCOORD7,
     #endif
     out float4 oPos : OUTPOSITION)
 {
@@ -40,6 +44,10 @@ void VS(float4 iPos : POSITION,
     oPos = GetClipPos(worldPos);
     oTexCoord = GetTexCoord(iTexCoord);
     oWorldPos = float4(worldPos, GetDepth(oPos));
+
+    #ifdef SOFTPARTICLES
+        oScreenPos = GetScreenPos(oPos);
+    #endif
 
     #if defined(D3D11) && defined(CLIPPLANE)
         oClip = dot(oPos, cClipPlane);
@@ -57,6 +65,9 @@ void PS(float2 iTexCoord : TEXCOORD0,
     #endif
     #if defined(D3D11) && defined(CLIPPLANE)
         float iClip : SV_CLIPDISTANCE0,
+    #endif
+    #ifdef SOFTPARTICLES
+        float4 iScreenPos : TEXCOORD7,
     #endif
     #ifdef PREPASS
         out float4 oDepth : OUTCOLOR1,
@@ -83,11 +94,34 @@ void PS(float2 iTexCoord : TEXCOORD0,
         diffColor *= iColor;
     #endif
 
+    // fill rate optimization: if original pixel almost transparent
+    // discard it to block read/write operations for next shader instructions (new HW does early out)
+    #ifdef SOFTPARTICLES   
+        const float theshold = 1.0 / 64.0;
+        if (diffColor.a < theshold) discard; 
+    #endif
+
     // Get fog factor
     #ifdef HEIGHTFOG
         float fogFactor = GetHeightFogFactor(iWorldPos.w, iWorldPos.y);
     #else
         float fogFactor = GetFogFactor(iWorldPos.w);
+    #endif
+
+    #ifdef SOFTPARTICLES    
+        float depth = Sample2DProj(DepthBuffer, iScreenPos).r;
+        #ifdef HWDEPTH
+            depth = ReconstructDepth(depth);
+        #endif
+
+        float particleDepth = iWorldPos.w;
+        float diffZ = (depth - particleDepth) * (cFarClipPS - cNearClipPS);
+        diffZ *= cFadeScale;
+        float inputValue = saturate(diffZ);
+        float outputValue = 0.5 * pow(saturate(2 * ((inputValue > 0.5) ? 1 - inputValue : inputValue)), cFadeContrastPower);
+        float weight = (inputValue > 0.5) ? 1 - outputValue : outputValue;
+
+        diffColor.a *= weight;
     #endif
 
     #if defined(PREPASS)

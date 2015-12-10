@@ -1,3 +1,3 @@
-<technique vs="SoftParticlesUnlit" ps="SoftParticlesUnlit" vsdefines="VERTEXCOLOR SOFTPARTICLES" psdefines="HWDEPTH DIFFMAP VERTEXCOLOR SOFTPARTICLES">
-    <pass name="alpha" depthtest="always" depthwrite="false" blend="alpha" />
+<technique vs="Unlit" ps="Unlit" vsdefines="VERTEXCOLOR SOFTPARTICLES" psdefines="HWDEPTH DIFFMAP VERTEXCOLOR SOFTPARTICLES">
+    <pass name="alpha" depthtest="less" depthwrite="false" blend="alpha" />
 </technique>
