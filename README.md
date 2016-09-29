@@ -3,6 +3,7 @@
 License: Public Domain<br>
 http://urho3d.prophpbb.com/topic1611.html
 
+There is two implementation: in MyData and in Data (by MonkeyFirst)
 Discussion: https://github.com/1vanK/Urho3DSoftParticles/pull/3
 
 <b>For big sprites you need decrease DepthDiffMult in material.</b>
