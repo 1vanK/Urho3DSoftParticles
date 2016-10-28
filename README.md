@@ -1,3 +1,7 @@
+#This is obosolete after https://github.com/urho3d/Urho3D/commit/861a85fb1f5adbd82b1a3ba8160bad5b6fcc0da4
+
+---------------
+
 #Urho3D Soft Particles
 
 License: Public Domain<br>
